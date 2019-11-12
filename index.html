@@ -3,8 +3,50 @@
 <head>
 <meta charset="utf-8">
 
+<script src="https://cdn.bootcss.com/echarts/4.3.0/echarts.min.js"></script>
 </head>
 <body>
-It works. 喵喵喵。
+<div
+    id="ch"
+    style="width: 600px; height: 400px;"
+></div>
+
+<script>
+var chartInst = echarts.init(
+    document.getElementById('ch')
+)
+fetch('./weight.json', {
+    method: 'GET',
+    cache: 'no-cache'
+}).then(function(response) {
+    if (!response.ok) {
+        throw new Error('炸了')
+    }
+    return response.json()
+}).then(function(data) {
+    var xArr = data.map(function(it) {
+        return it.date
+    })
+    var yArr = data.map(function(it) {
+        return it.value
+    })
+    var option = {
+        xAxis: {
+            type: 'category',
+            data: xArr
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [{
+            data: yArr,
+            type: 'line'
+        }]
+    }
+    chartInst.setOption(option)
+}).catch(function(err) {
+    ch.innerHTML = 'Error'
+})
+</script>
 </body>
 </html>
